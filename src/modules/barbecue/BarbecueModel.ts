@@ -1,4 +1,4 @@
-import mongoose, { Document, Model } from 'mongoose';
+import mongoose, { Schema, Document, Model, Types } from 'mongoose';
 
 const schema = new mongoose.Schema(
   {
@@ -12,7 +12,11 @@ const schema = new mongoose.Schema(
     },
     observation: {
       type: String,
-      required: true,
+    },
+    participants: {
+      type: [Types.ObjectId],
+      ref: 'Participant',
+      index: true,
     },
     active: {
       type: Boolean,
@@ -31,8 +35,10 @@ const schema = new mongoose.Schema(
 
 export interface IBarbecue extends Document {
   date: Date;
-  description: string;
-  observation: string;
+  description?: string;
+  observation?: string;
+  participants?: Array<Schema.Types.ObjectId>;
+  total: string;
   active: boolean;
 }
 

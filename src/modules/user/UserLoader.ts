@@ -58,9 +58,13 @@ export const clearAndPrimeCache = (context: GraphQLContext, id: Types.ObjectId, 
 type UserArgs = ConnectionArguments & {
   search?: string;
 };
-export const loadUsers = async (context: GraphQLContext, args: UserArgs) => {
-  const where = args.search ? { name: { $regex: new RegExp(`^${args.search}`, 'ig') } } : {};
-  const users = UserModel.find(where, { _id: 1 }).sort({ createdAt: -1 });
+
+export const loadUsers = async (context: GraphQLContext, args: UserArgs, userIds?: Array<ObjectId>,) => {
+  const conditions = {
+    ...(args.search != null ? { name: { $regex: new RegExp(args.search, 'ig') } } : {}),
+    ...(userIds != null ? { _id: { $in: userIds } } : {})
+  };
+  const users = UserModel.find(conditions, { _id: 1 }).sort({ createdAt: -1 });
 
   return connectionFromMongoCursor({
     cursor: users,

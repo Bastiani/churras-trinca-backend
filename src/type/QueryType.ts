@@ -59,7 +59,7 @@ export default new GraphQLObjectType({
           type: GraphQLString,
         },
       },
-      resolve: (obj, args, context) => BarbecueLoader.loadBarbecue(context, args),
+      resolve: (obj, args, context) => BarbecueLoader.loadBarbecues(context, args),
     },
   }),
 });

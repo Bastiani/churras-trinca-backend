@@ -1,10 +1,10 @@
-import { GraphQLNonNull, GraphQLBoolean, GraphQLString } from 'graphql';
-import { mutationWithClientMutationId } from 'graphql-relay';
+import { GraphQLNonNull, GraphQLBoolean, GraphQLString, GraphQLList, GraphQLID } from 'graphql';
+import { mutationWithClientMutationId, toGlobalId, fromGlobalId } from 'graphql-relay';
 
 import BarbecueModel from '../BarbecueModel';
 
-import * as BarbecueLoader from '../BarbecueLoader';
-import BarbecueType from '../BarbecueType';
+import BarbecueLoader from '../BarbecueLoader';
+import { BarbecueConnection } from '../BarbecueType';
 
 const mutation = mutationWithClientMutationId({
   name: 'BarbecueAdd',
@@ -18,36 +18,40 @@ const mutation = mutationWithClientMutationId({
     observation: {
       type: GraphQLNonNull(GraphQLString),
     },
+    participants: {
+      type: GraphQLNonNull(GraphQLList(GraphQLNonNull(GraphQLID))),
+      description: "List of Global ID's of the participants that will be attached",
+    },
     active: {
       type: GraphQLBoolean,
     },
   },
   mutateAndGetPayload: async (args) => {
     const { date, description, observation, active } = args;
+    const participants = args.participants.map((participant: string) => fromGlobalId(participant).id);
 
     const newBarbecue = await new BarbecueModel({
       date,
       description,
       observation,
+      participants,
       active,
     }).save();
 
     return {
-      id: newBarbecue._id,
+      barbecue: newBarbecue,
       error: null,
     };
   },
   outputFields: {
-    barbecue: {
-      type: BarbecueType,
-      resolve: async ({ id }, args, context) => {
-        const newBarbecue = await BarbecueLoader.load(context, id);
-
-        if (!newBarbecue) {
-          return null;
-        }
-
-        return newBarbecue;
+    barbecueEdge: {
+      type: BarbecueConnection.edgeType,
+      resolve: ({ barbecue }) => {
+        const node = new BarbecueLoader(barbecue);
+        return {
+          cursor: toGlobalId('Barbecue', barbecue.id),
+          node,
+        };
       },
     },
     error: {

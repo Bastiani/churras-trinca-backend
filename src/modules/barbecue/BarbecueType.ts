@@ -3,12 +3,16 @@ import {
   GraphQLNonNull,
   GraphQLString,
   GraphQLBoolean,
+  GraphQLFloat,
 } from 'graphql';
 
-import { globalIdField } from 'graphql-relay';
+import { globalIdField, connectionArgs } from 'graphql-relay';
 
 import { connectionDefinitions } from '../../core/connection/CustomConnectionType';
 import { registerType, nodeInterface } from '../../interface/NodeInterface';
+
+import { ParticipantConnection } from '../participant/ParticipantType';
+import { ParticipantLoader } from '../../loader';
 
 const BarbecueType = registerType(
   new GraphQLObjectType({
@@ -32,6 +36,18 @@ const BarbecueType = registerType(
       observation: {
         type: GraphQLNonNull(GraphQLString),
         description: 'Observation of the barbecue',
+      },
+      participants: {
+        type: GraphQLNonNull(ParticipantConnection.connectionType),
+        args: {
+          ...connectionArgs,
+        },
+        resolve: async ({ participants }, args, context) => ParticipantLoader.loadParticipants(context, args, participants),
+      },
+      total: {
+        type: GraphQLFloat,
+        description: 'Total',
+        resolve: async ({ participants }, args, context) => ParticipantLoader.loadParticipantsTotal(context, args, participants),
       },
       active: {
         type: GraphQLBoolean,
