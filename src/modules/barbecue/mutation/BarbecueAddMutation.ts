@@ -18,23 +18,23 @@ const mutation = mutationWithClientMutationId({
     observation: {
       type: GraphQLNonNull(GraphQLString),
     },
-    participants: {
-      type: GraphQLNonNull(GraphQLList(GraphQLNonNull(GraphQLID))),
-      description: "List of Global ID's of the participants that will be attached",
-    },
+    // participants: {
+    //   type: GraphQLNonNull(GraphQLList(GraphQLNonNull(GraphQLID))),
+    //   description: "List of Global ID's of the participants that will be attached",
+    // },
     active: {
       type: GraphQLBoolean,
     },
   },
   mutateAndGetPayload: async (args) => {
     const { date, description, observation, active } = args;
-    const participants = args.participants.map((participant: string) => fromGlobalId(participant).id);
+    // const participants = args.participants.map((participant: string) => fromGlobalId(participant).id);
 
     const newBarbecue = await new BarbecueModel({
       date,
       description,
       observation,
-      participants,
+      // participants,
       active,
     }).save();
 

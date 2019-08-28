@@ -42,12 +42,12 @@ const BarbecueType = registerType(
         args: {
           ...connectionArgs,
         },
-        resolve: async ({ participants }, args, context) => ParticipantLoader.loadParticipants(context, args, participants),
+        resolve: async ({ id }, args, context) => ParticipantLoader.loadParticipants(context, args, id),
       },
       total: {
         type: GraphQLFloat,
         description: 'Total',
-        resolve: async ({ participants }, args, context) => ParticipantLoader.loadParticipantsTotal(context, args, participants),
+        resolve: async ({ id }, args, context) => ParticipantLoader.loadParticipantsTotal(context, args, id),
       },
       active: {
         type: GraphQLBoolean,

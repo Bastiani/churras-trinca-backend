@@ -12,7 +12,8 @@ import { connectionDefinitions } from '../../core/connection/CustomConnectionTyp
 import { registerType, nodeInterface } from '../../interface/NodeInterface';
 
 import UserType from '../user/UserType';
-import { UserLoader } from '../../loader';
+import BarbecueType from '../barbecue/BarbecueType';
+import { UserLoader, BarbecueLoader } from '../../loader';
 
 const ParticipantType = registerType(
   new GraphQLObjectType({
@@ -28,6 +29,11 @@ const ParticipantType = registerType(
         type: UserType,
         description: 'Participant',
         resolve: ({ participant }, args, context) => UserLoader.load(context, participant),
+      },
+      barbecue: {
+        type: BarbecueType,
+        description: 'Barbecue',
+        resolve: ({ barbecue }, args, context) => BarbecueLoader.load(context, barbecue),
       },
       total: {
         type: GraphQLFloat,

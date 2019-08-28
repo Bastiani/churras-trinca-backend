@@ -12,6 +12,7 @@ export default class Participant {
   id: string;
   _id: Types.ObjectId;
   participant: string;
+  barbecue: string;
   total: number;
   active: boolean | null | undefined;
 
@@ -19,6 +20,7 @@ export default class Participant {
     this.id = data.id;
     this._id = data._id;
     this.participant = data.participant;
+    this.barbecue = data.barbecue;
     this.total = data.total;
     this.active = data.active;
   }
@@ -48,9 +50,9 @@ export const clearAndPrimeCache = (context: GraphQLContext, id: Types.ObjectId, 
 
 type Args = ConnectionArguments;
 
-export const loadParticipants = async (context: GraphQLContext, args: Args, participantIds: Array<ObjectId>) => {
+export const loadParticipants = async (context: GraphQLContext, args: Args, id: Types.ObjectId) => {
   const conditions = {
-    ...(participantIds != null ? { _id: { $in: participantIds } } : {})
+    ...(id != null ? { barbecue: id } : {})
   };
   const participants = ParticipantModel.find(conditions, { _id: 1 }).sort({ createdAt: -1 });
 
@@ -62,9 +64,9 @@ export const loadParticipants = async (context: GraphQLContext, args: Args, part
   });
 };
 
-export const loadParticipantsTotal = async (context: GraphQLContext, args: Args, participantIds: Array<ObjectId>) => {
+export const loadParticipantsTotal = async (context: GraphQLContext, args: Args, id: Types.ObjectId) => {
   const conditions = {
-    ...(participantIds != null ? { _id: { $in: participantIds } } : {})
+    ...(id != null ? { barbecue: id } : {})
   };
 
   const aggregate = ParticipantModel.aggregate();

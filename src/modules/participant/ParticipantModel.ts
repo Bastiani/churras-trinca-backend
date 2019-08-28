@@ -11,6 +11,13 @@ const schema = new mongoose.Schema(
       required: true,
       index: true,
     },
+    barbecue: {
+      type: ObjectId,
+      ref: 'Barbecue',
+      description: 'Barbecue',
+      required: true,
+      index: true,
+    },
     total: {
       type: Number,
       required: false,
@@ -34,6 +41,7 @@ const schema = new mongoose.Schema(
 
 export interface IParticipant extends Document {
   participant: string;
+  barbecue: string;
   total: number;
   active: boolean;
 }

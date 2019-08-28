@@ -13,6 +13,10 @@ const mutation = mutationWithClientMutationId({
       type: GraphQLID,
       description: 'User id',
     },
+    barbecue: {
+      type: GraphQLID,
+      description: 'Barbecue id',
+    },
     total: {
       type: GraphQLFloat,
       description: 'Total contribution',
@@ -21,11 +25,15 @@ const mutation = mutationWithClientMutationId({
       type: GraphQLBoolean,
     },
   },
-  mutateAndGetPayload: async (args) => {
-    const { participant, total, active } = args;
+  mutateAndGetPayload: async (args, context) => {
+    const { user } = context;
+    const { participant, barbecue, total, active } = args;
+
+    const newUser = fromGlobalId(participant).id || user.id;
 
     const newParticipant = await new ParticipantModel({
-      participant: fromGlobalId(participant).id,
+      participant: newUser,
+      barbecue: fromGlobalId(barbecue).id,
       total,
       active,
     }).save();
