@@ -14,7 +14,6 @@ export default class Barbecue {
   date: Date;
   description: string | undefined;
   observation: string | undefined;
-  participants: ObjectId[] | undefined;
   total: string;
   active: boolean | null | undefined;
 
@@ -24,7 +23,6 @@ export default class Barbecue {
     this.date = data.date;
     this.description = data.description;
     this.observation = data.observation;
-    this.participants = data.participants;
     this.total = data.total;
     this.active = data.active;
   }
@@ -55,6 +53,7 @@ export const clearAndPrimeCache = (context: GraphQLContext, id: Types.ObjectId, 
 type BarbecueArgs = ConnectionArguments & {
   search?: string;
 };
+
 export const loadBarbecues = async (context: GraphQLContext, args: BarbecueArgs) => {
   const where = args.search ? { description: { $regex: new RegExp(`^${args.search}`, 'ig') } } : {};
   const barbecues = BarbecueModel.find(where, { _id: 1 }).sort({ createdAt: -1 });

@@ -1,9 +1,10 @@
-import { GraphQLString, GraphQLNonNull, GraphQLID } from 'graphql';
+import { GraphQLString, GraphQLNonNull, GraphQLID, GraphQLFloat, GraphQLBoolean } from 'graphql';
 import { fromGlobalId, mutationWithClientMutationId } from 'graphql-relay';
 
 import * as ParticipantLoader from '../ParticipantLoader';
 import ParticipantType from '../ParticipantType';
 import ParticipantModel from '../ParticipantModel';
+import { removeEmptyFields } from '../../../core/removeEmptyFields';
 
 const mutation = mutationWithClientMutationId({
   name: 'ParticipantEdit',
@@ -11,38 +12,46 @@ const mutation = mutationWithClientMutationId({
     id: {
       type: GraphQLNonNull(GraphQLID),
     },
-    date: {
-      type: GraphQLNonNull(GraphQLString),
+    participant: {
+      type: GraphQLID,
+      description: 'User id',
     },
-    description: {
-      type: GraphQLNonNull(GraphQLString),
+    barbecue: {
+      type: GraphQLID,
+      description: 'Barbecue id',
     },
-    observation: {
-      type: GraphQLNonNull(GraphQLString),
+    total: {
+      type: GraphQLFloat,
+      description: 'Total contribution',
+    },
+    active: {
+      type: GraphQLBoolean,
     },
   },
   mutateAndGetPayload: async (args, context) => {
-    const { id, date, description, observation, active } = args;
+    const { id, participant, barbecue, total, active } = args;
 
-    const participant = await ParticipantModel.findOne({
+    const participantUpdate = await ParticipantModel.findOne({
       _id: fromGlobalId(id).id,
     });
 
     // If not, throw an error
-    if (!participant) {
+    if (!participantUpdate) {
       return {
         error: 'Participante é inválido',
       };
     }
 
+    const payload = removeEmptyFields({ participant, barbecue, total, active });
+
     // Edit record
-    await participant.update({ date, description, observation, active });
+    await participantUpdate.update(payload);
 
     // Clear dataloader cache
-    ParticipantLoader.clearCache(context, participant._id);
+    ParticipantLoader.clearCache(context, participantUpdate._id);
 
     return {
-      id: participant._id,
+      id: participantUpdate.id,
       error: null,
     };
   },

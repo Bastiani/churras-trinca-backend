@@ -20,7 +20,7 @@ const ParticipantType = registerType(
     name: 'Participant',
     description: 'Participant type definition',
     fields: () => ({
-      id: globalIdField('Participant'),
+      id: globalIdField('Participant', participant => participant._id),
       _id: {
         type: GraphQLString,
         resolve: participant => participant._id,

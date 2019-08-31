@@ -34,7 +34,7 @@ const BarbecueType = registerType(
         description: 'Description of the barbecue',
       },
       observation: {
-        type: GraphQLNonNull(GraphQLString),
+        type: GraphQLString,
         description: 'Observation of the barbecue',
       },
       participants: {
@@ -42,12 +42,12 @@ const BarbecueType = registerType(
         args: {
           ...connectionArgs,
         },
-        resolve: async ({ id }, args, context) => ParticipantLoader.loadParticipants(context, args, id),
+        resolve: async ({ _id }, args, context) => ParticipantLoader.loadParticipants(context, args, _id),
       },
       total: {
         type: GraphQLFloat,
         description: 'Total',
-        resolve: async ({ id }, args, context) => ParticipantLoader.loadParticipantsTotal(context, args, id),
+        resolve: async ({ _id }, args, context) => ParticipantLoader.loadParticipantsTotal(context, args, _id),
       },
       active: {
         type: GraphQLBoolean,

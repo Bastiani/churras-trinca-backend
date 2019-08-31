@@ -1,4 +1,4 @@
-import { GraphQLString, GraphQLNonNull, GraphQLID, GraphQLList } from 'graphql';
+import { GraphQLString, GraphQLNonNull, GraphQLID } from 'graphql';
 import { fromGlobalId, mutationWithClientMutationId } from 'graphql-relay';
 
 import * as BarbecueLoader from '../BarbecueLoader';
@@ -12,21 +12,17 @@ const mutation = mutationWithClientMutationId({
       type: GraphQLNonNull(GraphQLID),
     },
     date: {
-      type: GraphQLNonNull(GraphQLString),
+      type: GraphQLString,
     },
     description: {
-      type: GraphQLNonNull(GraphQLString),
+      type: GraphQLString,
     },
     observation: {
-      type: GraphQLNonNull(GraphQLString),
-    },
-    participants: {
-      type: GraphQLList(GraphQLID),
-      description: "List of Global ID's of the participants that will be attached",
+      type: GraphQLString,
     },
   },
   mutateAndGetPayload: async (args, context) => {
-    const { id, date, description, observation, participants, active } = args;
+    const { id, date, description, observation, active } = args;
 
     const barbecue = await BarbecueModel.findOne({
       _id: fromGlobalId(id).id,
@@ -40,7 +36,7 @@ const mutation = mutationWithClientMutationId({
     }
 
     // Edit record
-    await barbecue.update({ date, description, observation, participants, active });
+    await barbecue.update({ date, description, observation, active });
 
     // Clear dataloader cache
     BarbecueLoader.clearCache(context, barbecue._id);

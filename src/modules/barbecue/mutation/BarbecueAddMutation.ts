@@ -1,5 +1,5 @@
-import { GraphQLNonNull, GraphQLBoolean, GraphQLString, GraphQLList, GraphQLID } from 'graphql';
-import { mutationWithClientMutationId, toGlobalId, fromGlobalId } from 'graphql-relay';
+import { GraphQLNonNull, GraphQLBoolean, GraphQLString } from 'graphql';
+import { mutationWithClientMutationId, toGlobalId } from 'graphql-relay';
 
 import BarbecueModel from '../BarbecueModel';
 
@@ -16,25 +16,19 @@ const mutation = mutationWithClientMutationId({
       type: GraphQLNonNull(GraphQLString),
     },
     observation: {
-      type: GraphQLNonNull(GraphQLString),
+      type: GraphQLString,
     },
-    // participants: {
-    //   type: GraphQLNonNull(GraphQLList(GraphQLNonNull(GraphQLID))),
-    //   description: "List of Global ID's of the participants that will be attached",
-    // },
     active: {
       type: GraphQLBoolean,
     },
   },
   mutateAndGetPayload: async (args) => {
     const { date, description, observation, active } = args;
-    // const participants = args.participants.map((participant: string) => fromGlobalId(participant).id);
 
     const newBarbecue = await new BarbecueModel({
       date,
       description,
       observation,
-      // participants,
       active,
     }).save();
 
