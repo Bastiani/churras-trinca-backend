@@ -43,6 +43,7 @@ const mutation = mutationWithClientMutationId({
     const participantExist = await ParticipantModel.findOne({
       participant: newUser,
       barbecue: fromGlobalId(barbecue).id,
+      active: true,
     });
 
     if (participantExist) {
