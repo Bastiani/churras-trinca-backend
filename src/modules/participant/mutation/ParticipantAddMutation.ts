@@ -1,5 +1,14 @@
-import { GraphQLBoolean, GraphQLString, GraphQLID, GraphQLFloat } from 'graphql';
-import { mutationWithClientMutationId, toGlobalId, fromGlobalId } from 'graphql-relay';
+import {
+  GraphQLBoolean,
+  GraphQLString,
+  GraphQLID,
+  GraphQLFloat,
+} from 'graphql';
+import {
+  mutationWithClientMutationId,
+  toGlobalId,
+  fromGlobalId,
+} from 'graphql-relay';
 
 import ParticipantModel from '../ParticipantModel';
 
@@ -30,6 +39,17 @@ const mutation = mutationWithClientMutationId({
     const { participant, barbecue, total, active } = args;
 
     const newUser = fromGlobalId(participant).id || user.id;
+
+    const participantExist = await ParticipantModel.findOne({
+      participant: newUser,
+      barbecue: fromGlobalId(barbecue).id,
+    });
+
+    if (participantExist) {
+      return {
+        error: 'Participante já cadastrado',
+      };
+    }
 
     const newParticipant = await new ParticipantModel({
       participant: newUser,
