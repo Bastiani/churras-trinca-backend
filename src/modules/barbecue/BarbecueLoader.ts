@@ -84,7 +84,7 @@ export const loadBarbecues = async (
     ? { description: { $regex: new RegExp(`^${args.search}`, 'ig') } }
     : {};
   const barbecues = BarbecueModel.find(where, { _id: 1 }).sort({
-    createdAt: -1
+    date: 1
   });
 
   return connectionFromMongoCursor({
