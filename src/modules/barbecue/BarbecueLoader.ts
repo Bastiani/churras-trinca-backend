@@ -1,5 +1,8 @@
 import DataLoader from 'dataloader';
-import { connectionFromMongoCursor, mongooseLoader } from '@entria/graphql-mongoose-loader';
+import {
+  connectionFromMongoCursor,
+  mongooseLoader
+} from '@entria/graphql-mongoose-loader';
 import mongoose, { Types } from 'mongoose';
 import { ConnectionArguments } from 'graphql-relay';
 
@@ -15,6 +18,7 @@ export default class Barbecue {
   description: string | undefined;
   observation: string | undefined;
   total: string;
+  user: string;
   active: boolean | null | undefined;
 
   constructor(data: IBarbecue) {
@@ -24,44 +28,69 @@ export default class Barbecue {
     this.description = data.description;
     this.observation = data.observation;
     this.total = data.total;
+    this.user = data.user;
     this.active = data.active;
   }
 }
 
-export const getLoader = () => new DataLoader((ids: ReadonlyArray<string>) => mongooseLoader(BarbecueModel, ids));
+export const getLoader = () =>
+  new DataLoader((ids: ReadonlyArray<string>) =>
+    mongooseLoader(BarbecueModel, ids)
+  );
 
 const viewerCanSee = () => true;
 
-export const load = async (context: GraphQLContext, id: string | Object | ObjectId): Promise<Barbecue | null> => {
+export const load = async (
+  context: GraphQLContext,
+  id: string | Object | ObjectId
+): Promise<Barbecue | null> => {
   if (!id && typeof id !== 'string') {
     return null;
   }
 
   let data;
   try {
-    data = await context.dataloaders.BarbecueLoader.load((id as string));
+    data = await context.dataloaders.BarbecueLoader.load(id as string);
   } catch (err) {
     return null;
   }
   return viewerCanSee() ? new Barbecue(data) : null;
 };
 
-export const clearCache = ({ dataloaders }: GraphQLContext, id: Types.ObjectId) => dataloaders.BarbecueLoader.clear(id.toString());
-export const primeCache = ({ dataloaders }: GraphQLContext, id: Types.ObjectId, data: IBarbecue) => dataloaders.BarbecueLoader.prime(id.toString(), data);
-export const clearAndPrimeCache = (context: GraphQLContext, id: Types.ObjectId, data: IBarbecue) => clearCache(context, id) && primeCache(context, id, data);
+export const clearCache = (
+  { dataloaders }: GraphQLContext,
+  id: Types.ObjectId
+) => dataloaders.BarbecueLoader.clear(id.toString());
+export const primeCache = (
+  { dataloaders }: GraphQLContext,
+  id: Types.ObjectId,
+  data: IBarbecue
+) => dataloaders.BarbecueLoader.prime(id.toString(), data);
+export const clearAndPrimeCache = (
+  context: GraphQLContext,
+  id: Types.ObjectId,
+  data: IBarbecue
+) => clearCache(context, id) && primeCache(context, id, data);
 
 type BarbecueArgs = ConnectionArguments & {
   search?: string;
 };
 
-export const loadBarbecues = async (context: GraphQLContext, args: BarbecueArgs) => {
-  const where = args.search ? { description: { $regex: new RegExp(`^${args.search}`, 'ig') } } : {};
-  const barbecues = BarbecueModel.find(where, { _id: 1 }).sort({ createdAt: -1 });
+export const loadBarbecues = async (
+  context: GraphQLContext,
+  args: BarbecueArgs
+) => {
+  const where = args.search
+    ? { description: { $regex: new RegExp(`^${args.search}`, 'ig') } }
+    : {};
+  const barbecues = BarbecueModel.find(where, { _id: 1 }).sort({
+    createdAt: -1
+  });
 
   return connectionFromMongoCursor({
     cursor: barbecues,
     context,
     args,
-    loader: load,
+    loader: load
   });
 };

@@ -22,13 +22,15 @@ const mutation = mutationWithClientMutationId({
       type: GraphQLBoolean,
     },
   },
-  mutateAndGetPayload: async (args) => {
+  mutateAndGetPayload: async (args, context) => {
     const { date, description, observation, active } = args;
+    const { user } = context;
 
     const newBarbecue = await new BarbecueModel({
       date,
       description,
       observation,
+      user: user.id,
       active,
     }).save();
 

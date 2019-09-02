@@ -12,7 +12,8 @@ import { connectionDefinitions } from '../../core/connection/CustomConnectionTyp
 import { registerType, nodeInterface } from '../../interface/NodeInterface';
 
 import { ParticipantConnection } from '../participant/ParticipantType';
-import { ParticipantLoader } from '../../loader';
+import UserType from '../user/UserType';
+import { ParticipantLoader, UserLoader } from '../../loader';
 
 const BarbecueType = registerType(
   new GraphQLObjectType({
@@ -48,6 +49,11 @@ const BarbecueType = registerType(
         type: GraphQLFloat,
         description: 'Total',
         resolve: async ({ _id }, args, context) => ParticipantLoader.loadParticipantsTotal(context, args, _id),
+      },
+      user: {
+        type: UserType,
+        description: 'User that created this',
+        resolve: ({ user }, args, context) => UserLoader.load(context, user),
       },
       active: {
         type: GraphQLBoolean,

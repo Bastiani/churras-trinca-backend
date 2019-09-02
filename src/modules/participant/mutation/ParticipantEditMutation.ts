@@ -1,4 +1,10 @@
-import { GraphQLString, GraphQLNonNull, GraphQLID, GraphQLFloat, GraphQLBoolean } from 'graphql';
+import {
+  GraphQLString,
+  GraphQLNonNull,
+  GraphQLID,
+  GraphQLFloat,
+  GraphQLBoolean,
+} from 'graphql';
 import { fromGlobalId, mutationWithClientMutationId } from 'graphql-relay';
 
 import * as ParticipantLoader from '../ParticipantLoader';
@@ -29,7 +35,14 @@ const mutation = mutationWithClientMutationId({
     },
   },
   mutateAndGetPayload: async (args, context) => {
+    const { user } = context;
     const { id, participant, barbecue, total, active } = args;
+
+    if (!user) {
+      return {
+        error: 'Usuário não logado',
+      };
+    }
 
     const participantUpdate = await ParticipantModel.findOne({
       _id: fromGlobalId(id).id,

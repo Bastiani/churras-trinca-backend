@@ -1,5 +1,7 @@
 import mongoose, { Document, Model } from 'mongoose';
 
+const { ObjectId } = mongoose.Schema.Types;
+
 const schema = new mongoose.Schema(
   {
     date: {
@@ -12,6 +14,13 @@ const schema = new mongoose.Schema(
     },
     observation: {
       type: String,
+    },
+    user: {
+      type: ObjectId,
+      ref: 'User',
+      description: 'User created this',
+      required: true,
+      index: true,
     },
     active: {
       type: Boolean,
@@ -33,6 +42,7 @@ export interface IBarbecue extends Document {
   description?: string;
   observation?: string;
   total: string;
+  user: string;
   active: boolean;
 }
 
