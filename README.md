@@ -26,7 +26,7 @@ For generate modules use my CLI [graphql-scripts](https://github.com/Bastiani/gr
 #### Setup
 
 ```bash
-npm install
+yarn install
 ```
 
 Note: If you do not have mongodb installed, please install it:
@@ -35,76 +35,10 @@ Note: If you do not have mongodb installed, please install it:
 brew install mongodb
 ```
 
-#### Develop
+Run server
 
 ```bash
-npm run watch
+yarn start
 ```
 
-### Test
-
-```bash
-npm test
-```
-
-Or
-
-```bash
-npm run test:watch
-```
-
-### Docker and docker-compose
-
-No needs for installing dependencies or running `mongod` in another terminal window
-
-```bash
-docker-compose build && docker-compose up
-```
-
-Test
-
-```bash
-docker-compose -f docker-compose.test.yml build && docker-compose -f docker-compose.test.yml up
-```
-
-### Production
-
-```bash
-# first compile the code
-npm run build
-
-# run graphql compiled server
-npm start
-```
-
-### Flow
-
-```bash
-npm run flow
-```
-
-Or
-
-```bash
-flow
-```
-
-### REPL server
-
-```bash
-npm run repl
-
-awesome > const user = await M.User.find()
-```
-
-Yep, await syntax works on the repl, it is awesome, tks @princejwesley (https://gist.github.com/princejwesley/a66d514d86ea174270210561c44b71ba)
-
-### Schema
-
-Update your schema
-
-```bash
-npm run update-schema
-```
-
-Take a look on the [Schema](https://github.com/entria/graphql-dataloader-boilerplate/blob/master/data/schema.graphql)
+Playground: `http://localhost:5000/graphiql`

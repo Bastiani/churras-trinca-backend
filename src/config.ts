@@ -13,14 +13,14 @@ if (process.env.NOW_REGION) {
 const ENV = process.env;
 
 // Database Settings
-const dBdevelopment = ENV.MONGO_URL || 'mongodb://admin:mongo2019@localhost:27017/churras-trinca?authSource=admin';
-const dBproduction = ENV.MONGO_URL || 'mongodb://localhost/database';
+const dBdevelopment = ENV.MONGO_URL || 'mongodb://localhost/churras-trinca';
+const dBproduction = ENV.MONGO_URL || 'mongodb://localhost/churras-trinca';
 
 // Test Database Settings
 // const test = 'mongodb://localhost/awesome-test';
 
 // Export DB Settings
-export const databaseConfig = ENV.NODE_ENV === 'production' ? dBproduction : dBdevelopment;
+export const databaseConfig =  ENV.NODE_ENV === 'production' ? dBproduction : dBdevelopment;
 
 // Export GraphQL Server settings
 export const graphqlPort = ENV.GRAPHQL_PORT || 5000;
